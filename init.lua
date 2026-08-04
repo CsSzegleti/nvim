@@ -194,7 +194,7 @@ do
     underline = { severity = { min = vim.diagnostic.severity.WARN } },
 
     -- Can switch between these as you prefer
-    virtual_text = true, -- Text shows up at the end of the line
+    virtual_text = false, -- Text shows up at the end of the line
     virtual_lines = true, -- Text shows up underneath the line, with virtual lines
 
     -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
@@ -389,11 +389,14 @@ do
       comments = { italic = false }, -- Disable italics in comments
     },
   }
+  vim.pack.add { { src = 'https://github.com/catppuccin/nvim', name = 'catppuccin' } }
+  require('catppuccin').setup { flavour = 'mocha', no_italic = true }
 
   -- Load the colorscheme here.
   -- Like many other themes, this one has different styles, and you could load
   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  vim.cmd.colorscheme 'tokyonight-night'
+  -- vim.cmd.colorscheme 'tokyonight-night'
+  vim.cmd.colorscheme 'catppuccin-nvim'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -499,7 +502,27 @@ do
     --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
     --   },
     -- },
-    -- pickers = {}
+    pickers = {
+      find_files = {
+        hidden = true,
+        path_display = function(opts, path)
+          local parts = vim.split(path, '/')
+          local len = #parts
+          if len <= 2 then return path end
+
+          local base_dir = parts[1]
+          local file_name = parts[len]
+          local intermediate = {}
+          for i = 2, len - 1 do
+            local dir_name = parts[i]
+            local char_count = dir_name:sub(1, 1) == '.' and 2 or 1
+            table.insert(intermediate, dir_name:sub(1, char_count))
+          end
+
+          return string.format('%s/%s/%s', base_dir, table.concat(intermediate, '/'), file_name)
+        end,
+      },
+    },
     extensions = {
       ['ui-select'] = { require('telescope.themes').get_dropdown() },
     },
@@ -996,6 +1019,7 @@ do
   require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
   require 'custom.plugins.toggle_terminal'
   require 'custom.plugins.kotlin-lsp'
+  require 'custom.keybindings'
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --
