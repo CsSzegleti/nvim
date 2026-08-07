@@ -493,6 +493,24 @@ do
   vim.pack.add(telescope_plugins)
 
   -- See `:help telescope` and `:help telescope.setup()`
+
+  local abbreviated_path = function(opts, path)
+    local parts = vim.split(path, '/')
+    local len = #parts
+    if len <= 2 then return path end
+
+    local base_dir = parts[1]
+    local file_name = parts[len]
+    local intermediate = {}
+    for i = 2, len - 1 do
+      local dir_name = parts[i]
+      local char_count = dir_name:sub(1, 1) == '.' and 2 or 1
+      table.insert(intermediate, dir_name:sub(1, char_count))
+    end
+
+    return string.format('%s/%s/%s', base_dir, table.concat(intermediate, '/'), file_name)
+  end
+
   require('telescope').setup {
     -- You can put your default mappings / updates / etc. in here
     --  All the info you're looking for is in `:help telescope.setup()`
@@ -504,23 +522,16 @@ do
     -- },
     pickers = {
       find_files = {
-        hidden = true,
-        path_display = function(opts, path)
-          local parts = vim.split(path, '/')
-          local len = #parts
-          if len <= 2 then return path end
-
-          local base_dir = parts[1]
-          local file_name = parts[len]
-          local intermediate = {}
-          for i = 2, len - 1 do
-            local dir_name = parts[i]
-            local char_count = dir_name:sub(1, 1) == '.' and 2 or 1
-            table.insert(intermediate, dir_name:sub(1, char_count))
-          end
-
-          return string.format('%s/%s/%s', base_dir, table.concat(intermediate, '/'), file_name)
-        end,
+        path_display = abbreviated_path,
+      },
+      lsp_references = {
+        path_display = abbreviated_path,
+      },
+      lsp_implementations = {
+        path_display = { 'smart' },
+      },
+      lsp_definitions = {
+        path_display = { 'smart' },
       },
     },
     extensions = {
@@ -794,6 +805,7 @@ do
     'prettier',
     'kotlin-lsp',
     'kotlin-debug-adapter',
+    'markdownlint',
     -- You can add other tools here that you want Mason to install
   })
 
@@ -1019,6 +1031,7 @@ do
   require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
   require 'custom.plugins.toggle_terminal'
   require 'custom.plugins.kotlin-lsp'
+  require 'custom.plugins.marks'
   require 'custom.keybindings'
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
