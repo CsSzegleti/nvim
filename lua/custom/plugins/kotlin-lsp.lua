@@ -30,6 +30,7 @@ require('kotlin').setup {
   -- Optional: Specify additional JVM arguments for the kotlin-lsp server
   jvm_args = {
     '-Xmx4g', -- Increase max heap (useful for large projects)
+    '-XX:+UseG1GC',
   },
 
   -- Optional: Configure inlay hints (requires kotlin-lsp v261+)
@@ -68,6 +69,6 @@ require('kotlin').setup {
   -- Set { enabled = false } on the table to disable the prompt entirely.
   file_templates = {
     enabled = true,
-    -- Class = "package ${PACKAGE_NAME}\n\nclass ${NAME} {\n\t|\n}",
+    Class = 'package ${PACKAGE_NAME}\n\nclass ${NAME} {\n\t|\n}',
   },
 }
