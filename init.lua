@@ -803,7 +803,6 @@ do
   local ensure_installed = vim.tbl_keys(servers or {})
   vim.list_extend(ensure_installed, {
     'prettier',
-    'kotlin-lsp',
     'kotlin-debug-adapter',
     'markdownlint',
     -- You can add other tools here that you want Mason to install
@@ -848,7 +847,8 @@ do
       -- python = { "isort", "black" },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
-      kotlin = { 'kotlin-lsp' },
+      java = { lsp_format = 'prefer' },
+      kotlin = { lsp_format = 'prefer' },
       htmlangular = { 'prettierd', 'prettier', stop_after_first = true },
       javascript = { 'prettierd', 'prettier', stop_after_first = true },
       typescript = { 'prettier' },
@@ -1030,8 +1030,10 @@ do
   require 'kickstart.plugins.neo-tree'
   require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
   require 'custom.plugins.toggle_terminal'
-  require 'custom.plugins.kotlin-lsp'
+  require 'custom.plugins.intellij-server'
+  require 'custom.plugins.harpoon'
   require 'custom.plugins.marks'
+  require 'custom.plugins.snacks'
   require 'custom.keybindings'
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
