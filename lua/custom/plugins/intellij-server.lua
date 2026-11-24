@@ -3,5 +3,9 @@ vim.pack.add {
 }
 
 require('intellij-server').setup {
+  jvm_args = { '-Xmx8g' },
   autostart = true,
+  connection = {
+    port = 9191,
+  },
 }
